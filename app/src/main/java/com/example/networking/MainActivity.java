@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,12 +21,18 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
-    private ArrayList<Mountain> items;
+    ArrayList<Mountain> items;
+    ArrayAdapter<Mountain> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        items = new ArrayList<>();
+        adapter = new ArrayAdapter<>( context this, R.layout.listview_item, items);
+
+        new JsonTask().execute("https://wwwlab.iit.his.se/brom/kurser/mobilprog/dbservice/admin/getdataasjson.php?type=brom");
     }
 
     @SuppressLint("StaticFieldLeak")
