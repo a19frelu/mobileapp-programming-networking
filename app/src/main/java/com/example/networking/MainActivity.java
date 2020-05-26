@@ -6,7 +6,11 @@ import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     ArrayList<Mountain> items;
-    ArrayAdapter<Mountain> adapter;
+    ArrayAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,18 @@ public class MainActivity extends AppCompatActivity {
 
         items = new ArrayList<>();
         adapter = new ArrayAdapter<>( context this, R.layout.listview_item, items);
+
+        ListView view = findViewById(R.id.TheListView);
+        view.setAdapter(adapter);
+        view.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(adapterView<?> adapterView, View, view, int i, long i) {
+                String message = "The mountain" + items.get(i).getName() +
+                        "is located in" + items.get(i).getLocation() +
+                        "and is" + items.get(i).getHeight() + "meters high.";
+                Toast.makeText( MainActivity.this, message, Toast.LENGTH_LONG).show();
+            }
+        });
 
         new JsonTask().execute("https://wwwlab.iit.his.se/brom/kurser/mobilprog/dbservice/admin/getdataasjson.php?type=brom");
     }

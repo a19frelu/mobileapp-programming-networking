@@ -6,16 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
-
-    <ListView
+   <ListView
+        android:id="@+id/TheListView"
         android:layout_width="309dp"
         android:layout_height="310dp"
         tools:layout_editor_absoluteX="10dp"
         tools:layout_editor_absoluteY="70dp" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
