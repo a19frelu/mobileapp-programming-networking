@@ -12,6 +12,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,19 +38,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         items = new ArrayList<>();
-        adapter = new ArrayAdapter<>( context this, R.layout.listview_item, items);
+        adapter = new ArrayAdapter<>(  this, R.layout.list_item_textview, items);
 
         ListView view = findViewById(R.id.TheListView);
         view.setAdapter(adapter);
-        view.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+
+        view.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(adapterView<?> adapterView, View, view, int i, long i) {
-                String message = "The mountain" + items.get(i).getName() +
-                        "is located in" + items.get(i).getLocation() +
-                        "and is" + items.get(i).getHeight() + "meters high.";
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String message = "The mountain " + items.get(position).getName() +
+                        " is located in " + items.get(position).getLocation() +
+                        " and is " + items.get(position).getHeight() + " meters high.";
                 Toast.makeText( MainActivity.this, message, Toast.LENGTH_LONG).show();
             }
         });
+
 
         new JsonTask().execute("https://wwwlab.iit.his.se/brom/kurser/mobilprog/dbservice/admin/getdataasjson.php?type=brom");
     }
@@ -93,7 +99,23 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String json) {
-            Log.d("TAG", json);
+            try {
+                items.clear();
+                JSONArray jsonArray = new JSONArray(json);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+                    String name = jsonObject.getString("name");
+                    String location = jsonObject.getString("location");
+                    int height = jsonObject.getInt("size");
+                    Mountain mountain = new Mountain(name, location, height);
+                    items.add(mountain);
+                }
+                adapter.notifyDataSetChanged();
+            } catch (JSONException e) {
+                Log.d(TAG, "Failed to parse JSON:");
+            }
+
         }
     }
 }
